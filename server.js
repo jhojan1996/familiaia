@@ -30,6 +30,9 @@ app.post('/api/pictures', function(req, res){
 		if(err){
 			return res.send(500, "Error uploading file");
 		}
+		var response = {
+			
+		}
 		res.send('File uploaded')
 	});
 });
