@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const ext = require('file-extension');
 const vision  = require('node-cloud-vision-api');
+const bodyParser = require('body-parser');
 
 vision.init({auth: 'AIzaSyCol7ihf26zCvyHTB0RGSveKbixIm4RSFo'});
 
@@ -19,6 +20,8 @@ const app = express();
 app.use(express.static('assets'));
 app.use(express.static('views'));
 app.use(express.static('src'));
+app.use(bodyParser.json({limit: "100mb", type:'application/json'}));
+app.use(bodyParser.urlencoded({limit: "100mb", extended: true, parameterLimit:50000}));
 
 app.get('/', (req, res)=>{
 	res.sendfile('index.html');
@@ -27,30 +30,33 @@ app.get('/', (req, res)=>{
 
 app.post('/api/pictures', function(req, res){
 	upload(req,res,function(err){
+		console.log(req.file.filename);
 		if(err){
 			return res.send(500, "Error uploading file");
 		}
 		var response = {
-			
+			status: 200,
+			fileName: req.file.filename
 		}
-		res.send('File uploaded')
+		res.send(response);
 	});
 });
 
-app.get('/api/textRecognize', function(req, res){
+app.post('/api/textRecognize', function(req, res){
+	console.log("req------->",req.body);
 	const requ = new vision.Request({
-	  image: new vision.Image('./assets/familia3.jpg'),
+	  image: new vision.Image('./uploads/'+req.body.image),
 	  features: [
 	    new vision.Feature('LOGO_DETECTION', 4)
 	  ]
-	})
-	 
-	// send single request
-	vision.annotate(requ).then((res) => {
-	  // handling response
-	  console.log(JSON.stringify(res.responses))
+	});
+
+	vision.annotate(requ).then((response) => {
+	  	res.send(response.responses);
+	  	console.log(JSON.stringify(response.responses))
 	}, (e) => {
-	  console.log('Error: ', e)
+		res.send(e);
+	  	console.log('Error: ', e)
 	})
 });
 
