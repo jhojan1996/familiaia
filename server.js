@@ -48,7 +48,8 @@ app.post('/api/textRecognize', function(req, res){
 	const requ = new vision.Request({
 	  image: new vision.Image('./uploads/'+req.body.image),
 	  features: [
-	    new vision.Feature('LOGO_DETECTION', 4)
+	    new vision.Feature('LOGO_DETECTION', 4),
+	    new vision.Feature('TEXT_DETECTION', 10),
 	  ]
 	});
 

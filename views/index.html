@@ -25,11 +25,19 @@
 			  	<ul>
 			  		<li><a href="#tabs-1">Imagen</a></li>
 			    	<li><a href="#tabs-2">Logo</a></li>
+			    	<li><a href="#tabs-3">Texto</a></li>
+			    	<li><a href="#tabs-4">Precios</a></li>
 			  	</ul>
 			  	<div id="tabs-1" class="center">
 			    	<img id="img" class="img">
 			 	</div>
 			 	<div id="tabs-2" class="center">
+			    	
+			 	</div>
+			 	<div id="tabs-3" class="center">
+			    	
+			 	</div>
+			 	<div id="tabs-4" class="center">
 			    	
 			 	</div>
 			</div>
@@ -72,34 +80,96 @@
 			})
 			.then(res=>res.json())
 			.then(response=>{
-				var table = `
-				<table>
-					<tr>
-						<td>Marca</td>
-						<td>Confiabilidad</td>
-					</tr>
-				`;
-				if(typeof response[0].logoAnnotations === 'undefined'){
-					table += `
-					<tr>
-						<td colspan='2' align='center'><i>No he podido identificar ninguna marca</i></td>
-					</tr>
-					`;
-				}else{
-					for (let i = 0; i < response[0].logoAnnotations.length; i++) {
-						table += `
-						<tr>
-							<td>${response[0].logoAnnotations[i].description}</td>
-							<td>${Math.round(response[0].logoAnnotations[i].score * 100)}%</td>
-						</tr>
-						`;
-					}
-				}
-					
-				table += "</table>";
-				document.getElementById("tabs-2").innerHTML = table;
+				createLogoTable(response);
+				createTextTable(response);
+				createPriceTable(response);
 			})
 			.catch(err=>console.log(err));
+		}
+
+		function createLogoTable(response){
+			var table = `
+			<table>
+				<tr>
+					<td>Marca</td>
+					<td>Confiabilidad</td>
+				</tr>
+			`;
+			if(typeof response[0].logoAnnotations === 'undefined'){
+				table += `
+				<tr>
+					<td colspan='2' align='center'><i>No he podido identificar ninguna marca</i></td>
+				</tr>
+				`;
+			}else{
+				for (let i = 0; i < response[0].logoAnnotations.length; i++) {
+					table += `
+					<tr>
+						<td>${response[0].logoAnnotations[i].description}</td>
+						<td>${Math.round(response[0].logoAnnotations[i].score * 100)}%</td>
+					</tr>
+					`;
+				}
+			}
+				
+			table += "</table>";
+			document.getElementById("tabs-2").innerHTML = table;
+		}
+
+		function createTextTable(response){
+			var table = `
+			<table>
+				<tr>
+					<td align='center'><b>Texto</b></td>
+				</tr>
+			`;
+			if(typeof response[0].textAnnotations === 'undefined'){
+				table += `
+				<tr>
+					<td colspan='2' align='center'><i>No he reconocido texto</i></td>
+				</tr>
+				`;
+			}else{
+				table += `
+				<tr>
+					<td>${response[0].textAnnotations[0].description}</td>
+				</tr>
+				`;
+			}
+				
+			table += "</table>";
+			document.getElementById("tabs-3").innerHTML = table;
+		}
+
+		function createPriceTable(response){
+			var table = `
+			<table>
+				<tr>
+					<td align='center'><b>Precios</b></td>
+				</tr>
+			`;
+			if(typeof response[0].textAnnotations === 'undefined'){
+				table += `
+				<tr>
+					<td colspan='2' align='center'><i>No he reconocido texto</i></td>
+				</tr>
+				`;
+			}else{
+				for (let i = 1; i < response[0].textAnnotations.length; i++) {
+					table += response[0].textAnnotations[i].description.replace(/\$([\d,]+(?:\.\d+)?)/g,
+					function (string, c1) {
+					    return `
+					    <tr>
+							<td>${string}</td>
+						</tr>
+					    `;
+					});
+				}
+				
+			}
+				
+			table += "</table>";
+			document.getElementById("tabs-4").innerHTML = table;
 		}
 	</script>
 </body>
