@@ -20,6 +20,7 @@ const app = express();
 app.use(express.static('assets'));
 app.use(express.static('views'));
 app.use(express.static('src'));
+app.use(express.static('uploads'));
 app.use(bodyParser.json({limit: "100mb", type:'application/json'}));
 app.use(bodyParser.urlencoded({limit: "100mb", extended: true, parameterLimit:50000}));
 
@@ -61,7 +62,7 @@ app.post('/api/textRecognize', function(req, res){
 });
 
 
-app.listen(3000, (err)=>{
+app.listen(process.env.PORT || 5000, (err)=>{
 	if(err) return console.log("Hubo un error"), process.exit(1);
 	console.log("FamiliaIA escuchando en el puerto 3000");
 });

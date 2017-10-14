@@ -7141,3 +7141,16 @@ body {
     display: block;
     transition: all .5s ease;
     opacity: 1; }
+
+
+body{
+  font-family: arial;
+}
+
+.img{
+  width: 20%;
+}
+
+.center{
+  text-align: center;
+}

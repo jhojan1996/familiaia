@@ -4,3 +4,7 @@ function callAPI(){
 		.then(text=>console.log(text))
 		.catch(err=>console.log(err));
 }
+
+$(document).ready(function(){
+	$( "#tabs" ).tabs();
+});
