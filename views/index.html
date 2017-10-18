@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Familia IA</title>
+	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/css/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" href="/css/index.css" />
 </head>
@@ -20,24 +21,66 @@
 				</form>
 			</div>
 		</div>
+		<div class="row">
+			<div class=""></div>
+		</div>
 		<div class='row'>
 			<div id="tabs">
 			  	<ul>
 			  		<li><a href="#tabs-1">Imagen</a></li>
-			    	<li><a href="#tabs-2">Logo</a></li>
-			    	<li><a href="#tabs-3">Texto</a></li>
-			    	<li><a href="#tabs-4">Precios</a></li>
+			  		<li><a href="#tabs-2">Identificación de marcas</a></li>
+			    	<li><a href="#tabs-3">Informe de planometria</a></li>
+			    	<li><a href="#tabs-4">Texto</a></li>
+			    	<li><a href="#tabs-5">Precios</a></li>
 			  	</ul>
 			  	<div id="tabs-1" class="center">
-			    	<img id="img" class="img">
+			    	<!--<img id="img" class="img">-->
 			 	</div>
 			 	<div id="tabs-2" class="center">
-			    	
+			    	<div class="left">
+			    		<img id="img" class="img">
+			    	</div>
+			    	<div class="left" id="logoTabla"></div>
+			    	<div class="clear"></div>
 			 	</div>
 			 	<div id="tabs-3" class="center">
-			    	
+			    	<div class="left" style="width: 60%">
+			    		<img src='/familia4.jpg' style="width: 85%">
+			    	</div>
+			    	<div class="left">
+			    		<table border="1">
+			    			<tr>
+			    				<td><b>Marca</b></td>
+			    				<td><b>%</b></td>
+			    			</tr>
+			    			<tr>
+			    				<td>Familia estilo</td>
+			    				<td>20%</td>
+			    			</tr>
+			    			<tr>
+			    				<td>Familia acolcha max</td>
+			    				<td>60%</td>
+			    			</tr>
+			    			<tr>
+			    				<td>Exito lujo</td>
+			    				<td>5%</td>
+			    			</tr>
+			    			<tr>
+			    				<td>Exito</td>
+			    				<td>10%</td>
+			    			</tr>
+			    			<tr>
+			    				<td>Suave Gold</td>
+			    				<td>5%</td>
+			    			</tr>
+			    		</table>
+			    	</div>
+			    	<div class="clear"></div>
 			 	</div>
 			 	<div id="tabs-4" class="center">
+			    	
+			 	</div>
+			 	<div id="tabs-5" class="center">
 			    	
 			 	</div>
 			</div>
@@ -46,131 +89,5 @@
 	<script type="text/javascript" src="/js/jquery.js"></script>
 	<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
-	<script type="text/javascript">
-		function toggleButtons(){
-			document.getElementById('fileName').classList.toggle('hide');
-			document.getElementById('btnUpload').classList.toggle('hide');
-			document.getElementById('btnCancel').classList.toggle('hide');
-		}
-
-		function cancel(){
-			toggleButtons();
-			document.getElementById('formUpload').reset();
-		}
-
-		function onsmt(){
-			var data = new FormData(document.getElementById('formUpload'));
-			fetch('/api/pictures',{method: "POST", body: data})
-			.then(res=>res.json())
-			.then(picture=>{
-				let image = picture.fileName;
-				document.getElementById('img').src = image;
-				let data2 = new FormData();
-				data2.append("image", image);
-				return fetch('/api/textRecognize', {
-								method: 'POST',
-								headers: {
-									'Accept': 'application/json, text/plain, */*',
-    								'Content-Type': 'application/json'
-								},
-								body: JSON.stringify({
-									image: image
-								})
-							});
-			})
-			.then(res=>res.json())
-			.then(response=>{
-				createLogoTable(response);
-				createTextTable(response);
-				createPriceTable(response);
-			})
-			.catch(err=>console.log(err));
-		}
-
-		function createLogoTable(response){
-			var table = `
-			<table>
-				<tr>
-					<td>Marca</td>
-					<td>Confiabilidad</td>
-				</tr>
-			`;
-			if(typeof response[0].logoAnnotations === 'undefined'){
-				table += `
-				<tr>
-					<td colspan='2' align='center'><i>No he podido identificar ninguna marca</i></td>
-				</tr>
-				`;
-			}else{
-				for (let i = 0; i < response[0].logoAnnotations.length; i++) {
-					table += `
-					<tr>
-						<td>${response[0].logoAnnotations[i].description}</td>
-						<td>${Math.round(response[0].logoAnnotations[i].score * 100)}%</td>
-					</tr>
-					`;
-				}
-			}
-				
-			table += "</table>";
-			document.getElementById("tabs-2").innerHTML = table;
-		}
-
-		function createTextTable(response){
-			var table = `
-			<table>
-				<tr>
-					<td align='center'><b>Texto</b></td>
-				</tr>
-			`;
-			if(typeof response[0].textAnnotations === 'undefined'){
-				table += `
-				<tr>
-					<td colspan='2' align='center'><i>No he reconocido texto</i></td>
-				</tr>
-				`;
-			}else{
-				table += `
-				<tr>
-					<td>${response[0].textAnnotations[0].description}</td>
-				</tr>
-				`;
-			}
-				
-			table += "</table>";
-			document.getElementById("tabs-3").innerHTML = table;
-		}
-
-		function createPriceTable(response){
-			var table = `
-			<table>
-				<tr>
-					<td align='center'><b>Precios</b></td>
-				</tr>
-			`;
-			if(typeof response[0].textAnnotations === 'undefined'){
-				table += `
-				<tr>
-					<td colspan='2' align='center'><i>No he reconocido texto</i></td>
-				</tr>
-				`;
-			}else{
-				for (let i = 1; i < response[0].textAnnotations.length; i++) {
-					table += response[0].textAnnotations[i].description.replace(/\$([\d,]+(?:\.\d+)?)/g,
-					function (string, c1) {
-					    return `
-					    <tr>
-							<td>${string}</td>
-						</tr>
-					    `;
-					});
-				}
-				
-			}
-				
-			table += "</table>";
-			document.getElementById("tabs-4").innerHTML = table;
-		}
-	</script>
 </body>
 </html>

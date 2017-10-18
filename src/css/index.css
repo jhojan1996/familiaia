@@ -2196,8 +2196,7 @@ ul.staggered-list li {
     color: rgba(255, 255, 255, 0.8);
     background-color: rgba(51, 51, 51, 0.08); }
 
-table, th, td {
-  border: none; }
+
 
 table {
   width: 100%;
@@ -7148,9 +7147,13 @@ body{
 }
 
 .img{
-  width: 20%;
+  width: 40%;
 }
 
 .center{
   text-align: center;
+}
+
+.clear{
+  clear: both;
 }
