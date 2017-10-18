@@ -152,7 +152,7 @@ function createTextTable(response){
 	}
 		
 	table += "</table>";
-	document.getElementById("tabs-4").innerHTML = table;
+	document.getElementById("tabs-3").innerHTML = table;
 }
 
 function createPriceTable(response){
@@ -183,5 +183,5 @@ function createPriceTable(response){
 	}
 		
 	table += "</table>";
-	document.getElementById("tabs-5").innerHTML = table;
+	document.getElementById("tabs-4").innerHTML = table;
 }
